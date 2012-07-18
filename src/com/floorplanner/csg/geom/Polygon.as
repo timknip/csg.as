@@ -12,11 +12,11 @@ package com.floorplanner.csg.geom
 	 */
 	public class Polygon
 	{
-		public var vertices:Vector.<IVertex>;
+		public var vertices:Array;
 		public var shared:*;
 		public var plane:Plane;
 		
-		public function Polygon(vertices:Vector.<IVertex> = null, shared:* = null)
+		public function Polygon(vertices:Array = null, shared:* = null)
 		{
 			this.vertices = vertices;
 			this.shared = shared;
@@ -25,7 +25,7 @@ package com.floorplanner.csg.geom
 		
 		public function clone():Polygon
 		{
-			var vertices:Vector.<IVertex> = new Vector.<IVertex>();
+			var vertices:Array = [];
 			for each (var v:IVertex in this.vertices) {
 				vertices.push(v.clone());
 			}

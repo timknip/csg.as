@@ -14,14 +14,14 @@ package com.floorplanner.csg.geom
 		public var plane:Plane;
 		public var front:Node;
 		public var back:Node;
-		public var polygons:Vector.<Polygon>;
+		public var polygons:Array;
 		
-		public function Node(polygons:Vector.<Polygon> = null)
+		public function Node(polygons:Array = null)
 		{
 			this.plane = null;
 			this.front = null;
 			this.back = null;
-			this.polygons = new Vector.<Polygon>();
+			this.polygons = [];
 			if (polygons) {
 				build(polygons);
 			}
@@ -60,11 +60,11 @@ package com.floorplanner.csg.geom
 		 * tree.
 		 * @param polygons
 		 */ 
-		public function clipPolygons(polygons:Vector.<Polygon>):Vector.<Polygon> 
+		public function clipPolygons(polygons:Array):Array
 		{
 			if (!this.plane) return polygons.slice();
-			var front:Vector.<Polygon> = new Vector.<Polygon>(),
-				back:Vector.<Polygon> = new Vector.<Polygon>();
+			var front:Array = [],
+				back:Array = [];
 			for (var i:uint = 0; i < polygons.length; i++) {
 				this.plane.splitPolygon(polygons[i], front, back, front, back);
 			}
@@ -89,9 +89,9 @@ package com.floorplanner.csg.geom
 		/**
 		 *  Return a list of all polygons in this BSP tree.
 		 */ 
-		public function allPolygons():Vector.<Polygon> 
+		public function allPolygons():Array
 		{
-			var polygons:Vector.<Polygon> = this.polygons.slice();
+			var polygons:Array = this.polygons.slice();
 			if (this.front) polygons = polygons.concat(this.front.allPolygons());
 			if (this.back) polygons = polygons.concat(this.back.allPolygons());
 			return polygons;
@@ -103,12 +103,12 @@ package com.floorplanner.csg.geom
 		  * nodes there. Each set of polygons is partitioned using the first polygon
 		  * (no heuristic is used to pick a good split).
 		  */
-		public function build(polygons:Vector.<Polygon>):void
+		public function build(polygons:Array):void
 		{
 			if (!polygons.length) return;
 			if (!this.plane) this.plane = polygons[0].plane.clone();
-			var front:Vector.<Polygon> = new Vector.<Polygon>(), 
-				back:Vector.<Polygon> = new Vector.<Polygon>();
+			var front:Array = [], 
+				back:Array = [];
 			for (var i:uint = 0; i < polygons.length; i++) {
 				this.plane.splitPolygon(polygons[i], this.polygons, this.polygons, front, back);
 			}

@@ -1,7 +1,5 @@
 package com.floorplanner.csg.geom
 {
-	import flash.geom.Vector3D;
-
 	public class Plane
 	{
 		public static var EPSILON:Number = 1e-5;
@@ -11,10 +9,10 @@ package com.floorplanner.csg.geom
 		public static const BACK:uint = 2;
 		public static const SPANNING:uint = 3;
 		
-		public var normal:Vector3D;
+		public var normal:Vector;
 		public var w:Number;
 		
-		public function Plane(normal:Vector3D=null, w:Number=0.0)
+		public function Plane(normal:Vector=null, w:Number=0.0)
 		{
 			this.normal = normal;
 			this.w = w;
@@ -39,14 +37,14 @@ package com.floorplanner.csg.geom
 		 * either `front` or `back`
 		 */
 		public function splitPolygon(polygon:Polygon, 
-									 coplanarFront:Vector.<Polygon>, 
-									 coplanarBack:Vector.<Polygon>, 
-									 front:Vector.<Polygon>, 
-									 back:Vector.<Polygon>):void
+									 coplanarFront:Array, 
+									 coplanarBack:Array, 
+									 front:Array, 
+									 back:Array):void
 		{
-			var vertices:Vector.<IVertex> = polygon.vertices,
+			var vertices:Array = polygon.vertices,
 				polygonType:uint = 0,
-				types:Vector.<uint> = new Vector.<uint>(),
+				types:Array = [],
 				type:uint,
 				t:Number,
 				i:uint;
@@ -70,8 +68,8 @@ package com.floorplanner.csg.geom
 					back.push(polygon);
 					break;
 				case SPANNING:
-					var f:Vector.<IVertex> = new Vector.<IVertex>(),
-						b:Vector.<IVertex> = new Vector.<IVertex>();
+					var f:Array = [],
+						b:Array = [];
 					for (i = 0; i < vertices.length; i++) {
 						var j:uint = (i + 1) % vertices.length;
 						var ti:uint = types[i], tj:uint = types[j];
@@ -94,9 +92,9 @@ package com.floorplanner.csg.geom
 			}
 		}
 		
-		public static function fromPoints(a:Vector3D, b:Vector3D, c:Vector3D):Plane
+		public static function fromPoints(a:Vector, b:Vector, c:Vector):Plane
 		{
-			var n:Vector3D = b.subtract(a).crossProduct(c.subtract(a));
+			var n:Vector = b.subtract(a).crossProduct(c.subtract(a));
 			n.normalize();
 			return new Plane(n, n.dotProduct(a));
 		}

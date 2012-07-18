@@ -3,10 +3,9 @@ package com.floorplanner.csg
 	import com.floorplanner.csg.geom.IVertex;
 	import com.floorplanner.csg.geom.Node;
 	import com.floorplanner.csg.geom.Polygon;
+	import com.floorplanner.csg.geom.Vector;
 	import com.floorplanner.csg.geom.Vertex;
-	
-	import flash.geom.Vector3D;
-	
+
 	/** 
 	 * Constructive Solid Geometry (CSG) is a modeling technique that uses Boolean
 	 * operations like union and intersection to combine 3D solids. This library
@@ -60,11 +59,11 @@ package com.floorplanner.csg
 	 */ 
 	public class CSG
 	{
-		public var polygons:Vector.<Polygon>;
+		public var polygons:Array;
 		
 		public function CSG()
 		{
-			this.polygons = new Vector.<Polygon>();
+			this.polygons = [];
 		}
 		
 		/**
@@ -82,7 +81,7 @@ package com.floorplanner.csg
 		/**
 		 * 
 		 */ 
-		public function toPolygons():Vector.<Polygon>
+		public function toPolygons():Array
 		{
 			return this.polygons;	
 		}
@@ -189,11 +188,11 @@ package com.floorplanner.csg
 		 * @param radius
 		 * @return CSG
 		 */ 
-		public static function cube(center:Vector3D=null, radius:Vector3D=null):CSG
+		public static function cube(center:Vector=null, radius:Vector=null):CSG
 		{
-			var c:Vector3D = center || new Vector3D(),
-				r:Vector3D = radius || new Vector3D(1, 1, 1),
-				polygons:Vector.<Polygon> = new Vector.<Polygon>(),
+			var c:Vector = center || new Vector(),
+				r:Vector = radius || new Vector(1, 1, 1),
+				polygons:Array = [],
 				data:Array = [
 					[[0, 4, 6, 2], [-1, 0, 0]],
 					[[1, 3, 7, 5], [+1, 0, 0]],
@@ -204,17 +203,17 @@ package com.floorplanner.csg
 				];
 			for each (var array:Array in data) {
 				var v:Array = array[0],
-					n:Vector3D = new Vector3D(array[1][0], array[1][1], array[1][2]),
+					n:Vector = new Vector(array[1][0], array[1][1], array[1][2]),
 					verts:Array = v.map(function(elem:*, index:int, a:Array):IVertex {
 							var i:int = elem as int;
-							return new Vertex(new Vector3D(
+							return new Vertex(new Vector(
 								c.x + r.x * (2 * ((i & 1)?1:0) - 1),
 								c.y + r.y * (2 * ((i & 2)?1:0) - 1),
 								c.z + r.z * (2 * ((i & 4)?1:0) - 1)),
 								n
 							);
 						});
-				polygons.push(new Polygon(Vector.<IVertex>(verts)));
+				polygons.push(new Polygon(verts));
 			}
 			return CSG.fromPolygons(polygons);
 		}
@@ -227,28 +226,28 @@ package com.floorplanner.csg
 		 * @param stacks
 		 * @return CSG
 		 */ 
-		public static function sphere(center:Vector3D=null, radius:Number=1, slices:Number=16, stacks:Number=8):CSG
+		public static function sphere(center:Vector=null, radius:Number=1, slices:Number=16, stacks:Number=8):CSG
 		{
-			var c:Vector3D = center || new Vector3D(),
+			var c:Vector = center || new Vector(),
 				r:Number = radius,
-				polygons:Vector.<Polygon> = new Vector.<Polygon>(),
-				vertices:Vector.<IVertex>;
+				polygons:Array = [],
+				vertices:Array;
 			
 			function vertex(theta:Number, phi:Number):void {
 				theta *= Math.PI * 2;
 				phi *= Math.PI;
-				var dir:Vector3D = new Vector3D(
+				var dir:Vector = new Vector(
 					Math.cos(theta) * Math.sin(phi),
 					Math.cos(phi),
 					Math.sin(theta) * Math.sin(phi)
 				);
-				var sdir:Vector3D = dir.clone();
+				var sdir:Vector = dir.clone();
 				sdir.scaleBy(r);
 				vertices.push(new Vertex(c.add(sdir), dir));
 			}
 			for (var i:uint = 0; i < slices; i++) {
 				for (var j:uint = 0; j < stacks; j++) {
-					vertices = new Vector.<IVertex>();
+					vertices = [];
 					vertex(i / slices, j / stacks);
 					if (j > 0) vertex((i + 1) / slices, j / stacks);
 					if (j < stacks - 1) vertex((i + 1) / slices, (j + 1) / stacks);
@@ -264,7 +263,7 @@ package com.floorplanner.csg
 		 * @param polygons
 		 * @return CSG
 		 */ 
-		public static function fromPolygons(polygons:Vector.<Polygon>):CSG
+		public static function fromPolygons(polygons:Array):CSG
 		{
 			var csg:CSG = new CSG();
 			csg.polygons = polygons;

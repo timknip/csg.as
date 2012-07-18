@@ -1,13 +1,11 @@
 package com.floorplanner.csg.geom
 {
-	import flash.geom.Vector3D;
-
 	public interface IVertex
 	{
-		function get pos():Vector3D;
-		function set pos(value:Vector3D):void;
-		function get normal():Vector3D;
-		function set normal(value:Vector3D):void;
+		function get pos():Vector;
+		function set pos(value:Vector):void;
+		function get normal():Vector;
+		function set normal(value:Vector):void;
 		function clone():IVertex;
 		function flip():void;
 		function interpolate(other:IVertex, t:Number):IVertex;
