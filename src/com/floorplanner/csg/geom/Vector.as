@@ -29,6 +29,15 @@ package com.floorplanner.csg.geom
 			return new Vector(this.x+other.x, this.y+other.y, this.z+other.z);
 		}
 		
+		public function divideBy(t:Number):void
+		{
+			if (t != 0) {
+				this.x /= t;
+				this.y /= t;
+				this.z /= t;
+			}
+		}
+		
 		public function scaleBy(t:Number):void
 		{
 			this.x *= t;
@@ -62,7 +71,7 @@ package com.floorplanner.csg.geom
 		
 		public function normalize():void
 		{
-			
+			this.divideBy(this.length());
 		}
 	}
 }
