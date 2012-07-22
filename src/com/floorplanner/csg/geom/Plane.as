@@ -22,7 +22,7 @@ package com.floorplanner.csg.geom
 		
 		public function clone():Plane
 		{
-			return new Plane(this.normal, this.w);
+			return new Plane(this.normal.clone(), this.w);
 		}
 		
 		public function flip():void

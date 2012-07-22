@@ -52,9 +52,9 @@ package com.floorplanner.csg
 	 * ## License
 	 * 
 	 * Copyright (c) 2011 Evan Wallace (http://madebyevan.com/), under the MIT license.
-	
-	 * # class CSG
-	
+	 *
+	 * class CSG
+	 *
 	 * Holds a binary space partition tree representing a 3D solid. Two solids can
 	 * be combined using the `union()`, `subtract()`, and `intersect()` methods.
 	 */ 
@@ -62,6 +62,9 @@ package com.floorplanner.csg
 	{
 		public var polygons:Vector.<Polygon>;
 		
+		/**
+		 * Constructor
+		 */ 
 		public function CSG()
 		{
 			this.polygons = new Vector.<Polygon>();
@@ -75,6 +78,15 @@ package com.floorplanner.csg
 			var csg:CSG = new CSG();
 			for each (var p:Polygon in this.polygons) {
 				csg.polygons.push(p.clone());
+			}
+			return csg;
+		}
+		
+		public function inverse():CSG
+		{
+			var csg:CSG = this.clone();
+			for each (var p:Polygon in csg.polygons) {
+				p.flip();
 			}
 			return csg;
 		}
@@ -103,6 +115,7 @@ package com.floorplanner.csg
 		  *          +-------+            +-------+
 		  * 
 		  * @param csg
+		  * 
 		  * @return CSG
 		  */
 		public function union(csg:CSG):CSG
@@ -134,6 +147,7 @@ package com.floorplanner.csg
 		 *          +-------+
 		 * 
 		 * @param csg
+		 * 
 		 * @return CSG
 		 */
 		public function subtract(csg:CSG):CSG
@@ -167,6 +181,7 @@ package com.floorplanner.csg
 		 *          +-------+
 		 * 
 		 * @param csg
+		 * 
 		 * @return CSG
 		 */ 
 		public function intersect(csg:CSG):CSG
@@ -185,8 +200,10 @@ package com.floorplanner.csg
 		
 		/**
 		 * Cube
+		 * 
 		 * @param center
 		 * @param radius
+		 * 
 		 * @return CSG
 		 */ 
 		public static function cube(center:Vector3D=null, radius:Vector3D=null):CSG
@@ -208,9 +225,9 @@ package com.floorplanner.csg
 					verts:Array = v.map(function(elem:*, index:int, a:Array):IVertex {
 							var i:int = elem as int;
 							return new Vertex(new Vector3D(
-								c.x + r.x * (2 * ((i & 1)?1:0) - 1),
-								c.y + r.y * (2 * ((i & 2)?1:0) - 1),
-								c.z + r.z * (2 * ((i & 4)?1:0) - 1)),
+								c.x + (r.x * (2 * ((i & 1)?1:0) - 1)),
+								c.y + (r.y * (2 * ((i & 2)?1:0) - 1)),
+								c.z + (r.z * (2 * ((i & 4)?1:0) - 1))),
 								n
 							);
 						});
@@ -221,10 +238,12 @@ package com.floorplanner.csg
 		
 		/**
 		 * Sphere
+		 * 
 		 * @param center
 		 * @param radius
 		 * @param slices
 		 * @param stacks
+		 * 
 		 * @return CSG
 		 */ 
 		public static function sphere(center:Vector3D=null, radius:Number=1, slices:Number=16, stacks:Number=8):CSG
@@ -261,7 +280,9 @@ package com.floorplanner.csg
 		
 		/**
 		 * Construct a CSG solid from a list of `Polygon` instances.
+		 * 
 		 * @param polygons
+		 * 
 		 * @return CSG
 		 */ 
 		public static function fromPolygons(polygons:Vector.<Polygon>):CSG
