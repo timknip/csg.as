@@ -55,13 +55,13 @@
 		public function interpolate(other:IVertex, t:Number):IVertex
 		{
 			return new Vertex(
-				_lerp(this.pos, other.pos, t), 
-				_lerp(this.normal, Vertex(other).normal, t)
+				lerp(this.pos, other.pos, t), 
+				lerp(this.normal, Vertex(other).normal, t)
 			);
 			
 		}
 		
-		private function _lerp(a:Vector3D, b:Vector3D, t:Number):Vector3D
+		protected function lerp(a:Vector3D, b:Vector3D, t:Number):Vector3D
 		{
 			var ab:Vector3D = b.subtract(a);
 			ab.scaleBy(t);
