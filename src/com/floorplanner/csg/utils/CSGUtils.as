@@ -9,7 +9,15 @@ package com.floorplanner.csg.utils
 
 	public class CSGUtils
 	{
-		public static function getPolygon(points:Vector.<Vector3D>, shared:* = null):Polygon
+		/**
+		 * Creates a Polygon from an array of points.
+		 * 
+		 * @param points
+		 * @param shared
+		 * 
+		 * @return Polygon
+		 */ 
+		public static function createPolygon(points:Vector.<Vector3D>, shared:* = null):Polygon
 		{
 			if (points.length < 2) {
 				return null;
@@ -24,13 +32,22 @@ package com.floorplanner.csg.utils
 			return polygon;
 		}
 		
+		/**
+		 * Extrudes a polygon.
+		 * 
+		 * @param polygon The polygon to extrude
+		 * @param distance Extrusion distance
+		 * @param normal Optional normal to extrude along, default is polygon normal
+		 * 
+		 * @return Vector.<Polygon>
+		 */ 
 		public static function extrudePolygon(
 			polygon:Polygon, 
 			distance:Number, 
 			normal:Vector3D = null):Vector.<Polygon>
 		{
 			normal = normal || polygon.plane.normal;
-			normal.negate();
+
 			var du:Vector3D = normal.clone(),
 				vertices:Vector.<IVertex> = polygon.vertices,
 				top:Vector.<IVertex> = new Vector.<IVertex>(),
@@ -54,11 +71,10 @@ package com.floorplanner.csg.utils
 					v4:Vertex = new Vertex(p4, plane.normal),
 					poly:Polygon = new Polygon(Vector.<IVertex>([v1, v2, v3, v4]), polygon.shared);
 				polygons.push(poly);
-				top.push(new Vertex(p4, invNormal));
-				bot.unshift(new Vertex(p1, normal));
+				top.push(new Vertex(p4.clone(), normal));
+				bot.unshift(new Vertex(p1.clone(), invNormal));
 			}
-			//top.reverse();
-			//bot.reverse();
+
 			polygons.push(new Polygon(top, polygon.shared));
 			polygons.push(new Polygon(bot, polygon.shared));
 			
