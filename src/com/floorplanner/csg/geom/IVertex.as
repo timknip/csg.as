@@ -6,8 +6,6 @@ package com.floorplanner.csg.geom
 	{
 		function get pos():Vector3D;
 		function set pos(value:Vector3D):void;
-		function get normal():Vector3D;
-		function set normal(value:Vector3D):void;
 		function clone():IVertex;
 		function flip():void;
 		function interpolate(other:IVertex, t:Number):IVertex;

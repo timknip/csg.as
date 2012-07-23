@@ -3,15 +3,13 @@
 	import flash.geom.Vector3D;
 
 	/**
-	 * # class Vertex
+	 *class Vertex
 	 * 
 	 * Represents a vertex of a polygon. Use your own vertex class instead of this
 	 * one to provide additional features like texture coordinates and vertex
-	 * colors. Custom vertex classes need to provide a `pos` property and `clone()`,
-	 * `flip()`, and `interpolate()` methods that behave analogous to the ones
-	 * defined by `CSG.Vertex`. This class provides `normal` so convenience
-	 * functions like `CSG.sphere()` can return a smooth vertex normal, but `normal`
-	 * is not used anywhere else.
+	 * colors. Custom vertex classes need to implement the IVertex interface.
+	 * 
+	 * @see com.floorplanner.csg.IVertex
 	 */
 	public class Vertex implements IVertex
 	{
@@ -58,8 +56,9 @@
 		{
 			return new Vertex(
 				_lerp(this.pos, other.pos, t), 
-				_lerp(this.normal, other.normal, t)
+				_lerp(this.normal, Vertex(other).normal, t)
 			);
+			
 		}
 		
 		private function _lerp(a:Vector3D, b:Vector3D, t:Number):Vector3D
